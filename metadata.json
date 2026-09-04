@@ -1,0 +1,6 @@
+{
+  "name": "سامانه مدیریت آژانس تاکسی پردیس",
+  "description": "سامانه جامع و پیشرفته مدیریت ناوگان، رانندگان، سفرها، تعرفه‌ها، کمیسیون، شیفت شب، چت و گزارش‌های آژانس تاکسی پردیس (PWA)",
+  "requestFramePermissions": ["geolocation", "notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

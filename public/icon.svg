@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="taxiGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="tealGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)" />
+  <rect x="16" y="16" width="480" height="480" rx="94" fill="none" stroke="#334155" stroke-width="4" />
+  
+  <!-- Taxi Checker Pattern Header Strip -->
+  <g transform="translate(136, 110)">
+    <rect x="0" y="0" width="30" height="18" fill="#f59e0b" rx="2" />
+    <rect x="30" y="0" width="30" height="18" fill="#0f172a" rx="2" />
+    <rect x="60" y="0" width="30" height="18" fill="#f59e0b" rx="2" />
+    <rect x="90" y="0" width="30" height="18" fill="#0f172a" rx="2" />
+    <rect x="120" y="0" width="30" height="18" fill="#f59e0b" rx="2" />
+    <rect x="150" y="0" width="30" height="18" fill="#0f172a" rx="2" />
+    <rect x="180" y="0" width="30" height="18" fill="#f59e0b" rx="2" />
+    <rect x="210" y="0" width="30" height="18" fill="#0f172a" rx="2" />
+  </g>
+
+  <!-- Taxi Sign Base on Roof -->
+  <rect x="186" y="128" width="140" height="16" rx="4" fill="#64748b" />
+  
+  <!-- Taxi Sign Light -->
+  <path d="M 200 128 L 216 94 L 296 94 L 312 128 Z" fill="url(#taxiGold)" />
+  <circle cx="256" cy="111" r="5" fill="#ffffff" opacity="0.8" />
+
+  <!-- Car Body Main Silhouette -->
+  <path d="M 96 280 L 140 190 C 150 170 170 156 195 156 L 317 156 C 342 156 362 170 372 190 L 416 280 C 430 286 440 300 440 316 L 440 360 C 440 372 430 382 418 382 L 406 382 L 406 410 C 406 422 396 432 384 432 L 354 432 C 342 432 332 422 332 410 L 332 382 L 180 382 L 180 410 C 180 422 170 432 158 432 L 128 432 C 116 432 106 422 106 410 L 106 382 L 94 382 C 82 382 72 372 72 360 L 72 316 C 72 300 82 286 96 280 Z" fill="url(#taxiGold)" />
+
+  <!-- Windshield and Windows -->
+  <path d="M 148 266 L 176 192 C 182 178 194 172 208 172 L 250 172 L 250 266 Z" fill="#0f172a" />
+  <path d="M 262 172 L 304 172 C 318 172 330 178 336 192 L 364 266 L 262 266 Z" fill="#0f172a" />
+
+  <!-- Headlights -->
+  <circle cx="120" cy="326" r="22" fill="#ffffff" />
+  <circle cx="120" cy="326" r="14" fill="#38bdf8" />
+  <circle cx="392" cy="326" r="22" fill="#ffffff" />
+  <circle cx="392" cy="326" r="14" fill="#38bdf8" />
+
+  <!-- Front Grille & Badge -->
+  <rect x="180" y="312" width="152" height="32" rx="8" fill="#1e293b" />
+  <rect x="236" y="320" width="40" height="16" rx="4" fill="url(#tealGlow)" />
+
+  <!-- Brand Label Persian Typography Text Arc/Plate -->
+  <rect x="176" y="356" width="160" height="24" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5" />
+  <text x="256" y="373" font-family="sans-serif" font-weight="900" font-size="15" fill="#f8fafc" text-anchor="middle" letter-spacing="1">پردیس</text>
+</svg>
