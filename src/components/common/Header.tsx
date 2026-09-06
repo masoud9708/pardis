@@ -8,7 +8,6 @@ import {
   Download,
   WifiOff,
   UserCircle2,
-  ChevronDown,
   Car,
   Calendar,
   Menu,
@@ -28,10 +27,9 @@ export const Header: React.FC<HeaderProps> = ({
   currentTabLabel = 'پنل مدیریت کل',
   onToggleMobileNav,
 }) => {
-  const { user, logout, quickLoginAs } = useAuth();
+  const { user, logout } = useAuth();
   const isOnline = useOnlineStatus();
   const { isInstallable, installPWA } = usePWAInstall();
-  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
 
   useEffect(() => {
@@ -121,67 +119,21 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
 
-        {/* Quick Role Switcher */}
-        <div className="relative">
-          <button
-            id="role-switch-dropdown-btn"
-            onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-            className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium transition"
-            title="تغییر سریع نقش برای آزمون سامانه"
-          >
-            <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs border border-slate-300 overflow-hidden shrink-0">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user.full_name || 'کاربر'} className="w-full h-full object-cover" />
-              ) : (
-                <span>{user?.full_name ? user.full_name.charAt(0) : 'ک'}</span>
-              )}
-            </div>
-            <div className="hidden sm:block text-right">
-              <p className="text-xs font-bold leading-none text-slate-800">
-                {user?.full_name || 'کاربر'}
-              </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">{getRoleLabel(user?.role)}</p>
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 mr-1" />
-          </button>
-
-          {roleMenuOpen && (
-            <div
-              className="absolute left-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-50 text-xs"
-              onClick={() => setRoleMenuOpen(false)}
-            >
-              <div className="px-3 py-2 border-b border-slate-100 text-[11px] text-slate-400 font-medium">
-                سوئیچ سریع کاربر (تست نقش‌ها):
-              </div>
-              <button
-                onClick={() => quickLoginAs('ADMIN')}
-                className="w-full text-right px-3 py-2 hover:bg-slate-50 flex items-center justify-between text-slate-700"
-              >
-                <span className="font-semibold">مدیر ارشد آژانس</span>
-                <span className="text-[10px] bg-purple-50 text-purple-700 font-bold px-2 py-0.5 rounded border border-purple-200">
-                  Admin
-                </span>
-              </button>
-              <button
-                onClick={() => quickLoginAs('OPERATOR')}
-                className="w-full text-right px-3 py-2 hover:bg-slate-50 flex items-center justify-between text-slate-700"
-              >
-                <span className="font-semibold">اپراتور پذیرش و اعزام</span>
-                <span className="text-[10px] bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded border border-blue-200">
-                  Operator
-                </span>
-              </button>
-              <button
-                onClick={() => quickLoginAs('DRIVER')}
-                className="w-full text-right px-3 py-2 hover:bg-slate-50 flex items-center justify-between text-slate-700"
-              >
-                <span className="font-semibold">راننده ناوگان</span>
-                <span className="text-[10px] bg-teal-50 text-teal-700 font-bold px-2 py-0.5 rounded border border-teal-200">
-                  Driver
-                </span>
-              </button>
-            </div>
-          )}
+        {/* User Identity Badge (Role Switching Forbidden) */}
+        <div className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium">
+          <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs border border-slate-300 overflow-hidden shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.full_name || 'کاربر'} className="w-full h-full object-cover" />
+            ) : (
+              <span>{user?.full_name ? user.full_name.charAt(0) : 'ک'}</span>
+            )}
+          </div>
+          <div className="hidden sm:block text-right">
+            <p className="text-xs font-bold leading-none text-slate-800">
+              {user?.full_name || 'کاربر'}
+            </p>
+            <p className="text-[10px] text-slate-400 mt-0.5">{getRoleLabel(user?.role)}</p>
+          </div>
         </div>
 
         {/* Notifications Button */}

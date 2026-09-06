@@ -70,6 +70,12 @@ export const api = {
       body: JSON.stringify({ mobile: usernameOrMobile, username: usernameOrMobile, password }),
     }),
 
+  quickLogin: (target: string = 'dastgerdi') =>
+    request<{ token: string; user: User }>('/auth/quick-login', {
+      method: 'POST',
+      body: JSON.stringify({ target }),
+    }),
+
   registerDriver: (formData: any) =>
     request<{ success: boolean; message: string; driver_id: number }>('/auth/register-driver', {
       method: 'POST',

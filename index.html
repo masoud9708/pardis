@@ -2,6 +2,42 @@
 <html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Suppress third-party extension errors (e.g. MetaMask, wallet providers, browser plugins)
+      (function() {
+        function isExtensionError(err) {
+          if (!err) return false;
+          var msg = String(err.message || err.reason || err || '');
+          var stack = String(err.stack || '');
+          return (
+            msg.indexOf('MetaMask') !== -1 ||
+            msg.indexOf('metamask') !== -1 ||
+            msg.indexOf('ethereum') !== -1 ||
+            msg.indexOf('evm') !== -1 ||
+            msg.indexOf('message port closed') !== -1 ||
+            msg.indexOf('Extension context invalidated') !== -1 ||
+            stack.indexOf('chrome-extension://') !== -1 ||
+            stack.indexOf('moz-extension://') !== -1
+          );
+        }
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (isExtensionError(event.reason)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          if (isExtensionError(event.error || event.message)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>سامانه مدیریت آژانس تاکسی پردیس</title>
     <meta name="description" content="سامانه جامع و پیشرفته مدیریت ناوگان، رانندگان، سفرها، تعرفه‌ها، کمیسیون، شیفت شب، چت و گزارش‌های آژانس تاکسی پردیس (PWA)" />

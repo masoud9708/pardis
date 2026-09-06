@@ -18,7 +18,11 @@ export interface AuthenticatedRequest extends Request {
 
 export function generateToken(user: AuthUser): string {
   const payload = {
-    ...user,
+    id: user.id,
+    mobile: user.mobile,
+    full_name: user.full_name,
+    role: user.role,
+    driver_id: user.driver_id,
     exp: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
   };
   const str = Buffer.from(JSON.stringify(payload)).toString('base64url');

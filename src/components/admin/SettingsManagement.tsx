@@ -3,7 +3,7 @@ import { api } from '../../services/api';
 import { Save, CheckCircle2, CreditCard, Building2, Clock } from 'lucide-react';
 
 export const SettingsManagement: React.FC = () => {
-  const [settings, setSettings] = useState<Record<string, string>>({
+  const [settings, setSettings] = useState<Record<string, any>>({
     agency_name: 'تاکسی سرویس بهرامی خرم‌آباد',
     agency_phone: '۰۶۶-۳۳۴۴۰۰۰۰',
     agency_address: 'استان لرستان، شهرستان خرم‌آباد، روستای بهرامی، خیابان اصلی (جنب فرودگاه)',

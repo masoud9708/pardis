@@ -5,17 +5,19 @@ import { Bell, X, CheckCheck, Car, Moon, CreditCard, MessageSquare, AlertTriangl
 interface NotificationDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  notifications: NotificationItem[];
-  onMarkAsRead: (id: number) => void;
-  onMarkAllAsRead: () => void;
+  notifications?: NotificationItem[];
+  onMarkAsRead?: (id: number) => void;
+  onMarkAllAsRead?: () => void;
+  onNavigate?: (tab: string) => void;
 }
 
 export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
   isOpen,
   onClose,
-  notifications,
-  onMarkAsRead,
-  onMarkAllAsRead,
+  notifications = [],
+  onMarkAsRead = () => {},
+  onMarkAllAsRead = () => {},
+  onNavigate,
 }) => {
   if (!isOpen) return null;
 

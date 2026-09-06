@@ -113,7 +113,11 @@ export const InternalChat: React.FC = () => {
                   </span>
                   <span className="text-[10px] text-slate-400">{conv.updated_at?.slice(11, 16)}</span>
                 </div>
-                <p className="text-[11px] text-slate-500 truncate">{conv.last_message || 'مکالمه جدید'}</p>
+                <p className="text-[11px] text-slate-500 truncate">
+                  {typeof conv.last_message === 'string'
+                    ? conv.last_message
+                    : (conv.last_message?.content || 'مکالمه جدید')}
+                </p>
               </div>
             </button>
           ))}
@@ -163,7 +167,7 @@ export const InternalChat: React.FC = () => {
                         <span className="font-bold">{msg.sender_name}</span>
                         <span>{msg.created_at?.slice(11, 16)}</span>
                       </div>
-                      <p className="whitespace-pre-wrap">{msg.message}</p>
+                      <p className="whitespace-pre-wrap">{msg.content || msg.message}</p>
                     </div>
                   </div>
                 );

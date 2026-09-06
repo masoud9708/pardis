@@ -347,6 +347,8 @@ export function initDatabase() {
   // Safely alter existing tables if columns are missing
   try { db.exec('ALTER TABLE users ADD COLUMN username TEXT;'); } catch {}
   try { db.exec("UPDATE users SET username = 'admin', password_hash = 'sadra' WHERE role = 'ADMIN' OR mobile = '09121112233';"); } catch {}
+  try { db.exec("UPDATE users SET username = 'operator' WHERE role = 'OPERATOR';"); } catch {}
+  try { db.exec("UPDATE users SET username = 'dastgerdi' WHERE id = 7 OR mobile = '09928009915';"); } catch {}
   try { db.exec('ALTER TABLE drivers ADD COLUMN wallet_balance INTEGER DEFAULT 150000;'); } catch {}
   try { db.exec('ALTER TABLE drivers ADD COLUMN lat REAL DEFAULT 33.4360;'); } catch {}
   try { db.exec('ALTER TABLE drivers ADD COLUMN lng REAL DEFAULT 48.3610;'); } catch {}

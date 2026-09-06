@@ -9,9 +9,9 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   login: (mobile: string, pass: string) => Promise<void>;
+  quickLogin: (target?: string) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
-  quickLoginAs: (role: UserRole) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,21 +23,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState<boolean>(true);
 
   const refreshProfile = useCallback(async () => {
-    try {
-      if (!getStoredToken()) {
-        setUser(null);
-        setDriver(null);
-        setLoading(false);
-        return;
-      }
-      const data = await api.getMe();
-      setUser(data.user);
-      setDriver(data.driver);
-    } catch {
-      removeStoredToken();
-      setToken(null);
+    const currentToken = getStoredToken();
+    if (!currentToken) {
       setUser(null);
       setDriver(null);
+      setLoading(false);
+      return;
+    }
+    try {
+      const data = await api.getMe();
+      if (data && data.user) {
+        setUser(data.user);
+        setDriver(data.driver || null);
+      }
+    } catch (err: any) {
+      console.warn('Session check note:', err?.message);
+      // Only wipe credentials if explicitly rejected by server
+      if (err?.message?.includes('توکن') || err?.message?.includes('مجاز نیست')) {
+        removeStoredToken();
+        setToken(null);
+        setUser(null);
+        setDriver(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -56,7 +63,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.user) {
         setUser(res.user);
       }
-      await refreshProfile();
+      // Non-blocking driver profile hydration
+      try {
+        const profile = await api.getMe();
+        if (profile?.user) {
+          setUser(profile.user);
+          setDriver(profile.driver || null);
+        }
+      } catch (err) {
+        console.warn('Driver profile fetch fallback:', err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const quickLogin = async (target: string = 'dastgerdi') => {
+    setLoading(true);
+    try {
+      const res = await api.quickLogin(target);
+      setStoredToken(res.token);
+      setToken(res.token);
+      if (res.user) {
+        setUser(res.user);
+      }
+      try {
+        const profile = await api.getMe();
+        if (profile?.user) {
+          setUser(profile.user);
+          setDriver(profile.driver || null);
+        }
+      } catch (err) {
+        console.warn('Quick login driver profile fetch fallback:', err);
+      }
     } finally {
       setLoading(false);
     }
@@ -69,16 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setDriver(null);
   };
 
-  const quickLoginAs = async (role: UserRole) => {
-    if (role === 'ADMIN') {
-      await login('admin', 'sadra');
-    } else if (role === 'OPERATOR') {
-      await login('09123334455', 'operator123');
-    } else {
-      await login('09127778899', 'driver123');
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -88,9 +117,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         loading,
         login,
+        quickLogin,
         logout,
         refreshProfile,
-        quickLoginAs,
       }}
     >
       {children}

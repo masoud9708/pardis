@@ -65,6 +65,8 @@ export interface Driver {
   car_name?: string;
   license_plate?: string;
   car_color?: string;
+  color?: string;
+  avatar?: string;
   vehicle_id?: number;
   created_at: string;
   updated_at: string;
@@ -143,6 +145,7 @@ export interface Trip {
   driver_name?: string;
   driver_phone?: string;
   vehicle_id?: number;
+  car_name?: string;
   car_details?: string;
   license_plate?: string;
   trip_date: string;
@@ -219,16 +222,14 @@ export interface Conversation {
   id: number;
   type: 'DIRECT' | 'GROUP' | 'TRIP';
   title: string;
+  driver_name?: string;
+  car_name?: string;
   trip_id?: number;
   trip_number?: string;
   created_at: string;
   updated_at: string;
   unread_count?: number;
-  last_message?: {
-    content: string;
-    sender_name: string;
-    created_at: string;
-  };
+  last_message?: any;
 }
 
 export interface ChatMessage {
@@ -238,6 +239,7 @@ export interface ChatMessage {
   sender_name: string;
   sender_role: UserRole;
   content: string;
+  message?: string;
   attachment_url?: string;
   is_read: number;
   created_at: string;
@@ -385,6 +387,8 @@ export interface FleetDriver {
   car_name?: string;
   license_plate?: string;
   car_color?: string;
+  color?: string;
+  avatar?: string;
   car_model?: string;
   vehicle_type?: string;
 }
