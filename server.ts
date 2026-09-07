@@ -30,6 +30,9 @@ async function startServer() {
     });
   });
 
+  // Public static assets (PWA manifest, service worker, icons)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
   // Vite Middleware for development
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

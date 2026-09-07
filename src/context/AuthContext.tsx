@@ -35,16 +35,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (data && data.user) {
         setUser(data.user);
         setDriver(data.driver || null);
-      }
-    } catch (err: any) {
-      console.warn('Session check note:', err?.message);
-      // Only wipe credentials if explicitly rejected by server
-      if (err?.message?.includes('توکن') || err?.message?.includes('مجاز نیست')) {
+      } else {
         removeStoredToken();
         setToken(null);
         setUser(null);
         setDriver(null);
       }
+    } catch (err: any) {
+      console.warn('Session check note:', err?.message);
+      // Clean up token on unauthorized / invalid session errors
+      removeStoredToken();
+      setToken(null);
+      setUser(null);
+      setDriver(null);
     } finally {
       setLoading(false);
     }
@@ -53,6 +56,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     refreshProfile();
   }, [refreshProfile]);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      removeStoredToken();
+      setToken(null);
+      setUser(null);
+      setDriver(null);
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, []);
 
   const login = async (mobile: string, pass: string) => {
     setLoading(true);

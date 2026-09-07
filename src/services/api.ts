@@ -37,7 +37,7 @@ export function removeStoredToken() {
   localStorage.removeItem('pardis_auth_token');
 }
 
-async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function request<T>(endpoint: string, options: RequestInit = {}, retries = 2): Promise<T> {
   const token = getStoredToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -48,18 +48,53 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let lastError: any = null;
 
-  const data = await res.json().catch(() => ({}));
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-  if (!res.ok) {
-    throw new Error(data.error || 'خطایی در برقراری ارتباط با سرور رخ داد.');
+      const res = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          removeStoredToken();
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+          }
+          throw new Error(data.error || 'لطفاً وارد حساب کاربری خود شوید.');
+        }
+        throw new Error(data.error || 'خطایی در برقراری ارتباط با سرور رخ داد.');
+      }
+
+      return data as T;
+    } catch (err: any) {
+      lastError = err;
+      // Do not retry on explicit auth/permission errors or intentional user cancel
+      const isAuthError =
+        err?.message?.includes('وارد حساب کاربری') ||
+        err?.message?.includes('منقضی') ||
+        err?.message?.includes('دسترسی لازم');
+      if (isAuthError || err?.name === 'AbortError') {
+        throw err;
+      }
+      // If network failure (such as "Failed to fetch") and retries remain, wait briefly before retrying
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+      }
+    }
   }
 
-  return data as T;
+  throw lastError || new Error('خطا در برقراری ارتباط با سرور');
 }
 
 export const api = {

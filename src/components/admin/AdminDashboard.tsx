@@ -11,6 +11,8 @@ import {
   Plus,
   Search,
   CheckCircle2,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -23,24 +25,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [tonightShift, setTonightShift] = useState<NightShift | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [sumData, tripsData, driversData, shiftsData] = await Promise.all([
+      setError(null);
+      const [sumRes, tripsRes, driversRes, shiftsRes] = await Promise.allSettled([
         api.getReportsSummary(),
         api.getTrips(),
         api.getDrivers(),
         api.getNightShifts(),
       ]);
-      setSummary(sumData);
-      setActiveTrips(tripsData);
-      setDrivers(driversData);
-      const today = shiftsData.find((s) => s.status !== 'CANCELLED');
-      setTonightShift(today || null);
-    } catch (err) {
+
+      if (sumRes.status === 'fulfilled') {
+        setSummary(sumRes.value);
+      }
+      if (tripsRes.status === 'fulfilled') {
+        setActiveTrips(tripsRes.value);
+      }
+      if (driversRes.status === 'fulfilled') {
+        setDrivers(driversRes.value);
+      }
+      if (shiftsRes.status === 'fulfilled') {
+        const today = shiftsRes.value.find((s) => s.status !== 'CANCELLED');
+        setTonightShift(today || null);
+      }
+
+      // If all critical endpoints failed, provide friendly error message
+      if (
+        sumRes.status === 'rejected' &&
+        tripsRes.status === 'rejected' &&
+        driversRes.status === 'rejected'
+      ) {
+        const firstErr = (sumRes as PromiseRejectedResult).reason;
+        setError(firstErr?.message || 'خطا در برقراری ارتباط با سرور. لطفاً دوباره تلاش کنید.');
+      }
+    } catch (err: any) {
       console.error('Failed to load admin dashboard data:', err);
+      setError(err?.message || 'خطا در بارگذاری اطلاعات داشبورد.');
     } finally {
       setLoading(false);
     }
@@ -66,6 +90,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
 
   return (
     <div className="space-y-6">
+      {/* Dashboard Quick Bar / Refresh */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-base font-bold text-slate-800">پیشخوان مدیریت و کنترل عملیات</h1>
+          <p className="text-xs text-slate-500 mt-0.5">وضعیت زنده ناوگان، آمار روزانه و آخرین سفرهای تاکسی پردیس</p>
+        </div>
+        <button
+          onClick={loadData}
+          disabled={loading}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition shadow-2xs disabled:opacity-60 cursor-pointer"
+          title="بروزرسانی اطلاعات"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 text-teal-600 ${loading ? 'animate-spin' : ''}`} />
+          <span>{loading ? 'در حال دریافت...' : 'بروزرسانی'}</span>
+        </button>
+      </div>
+
+      {/* Error Recovery Banner */}
+      {error && (
+        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between gap-3 text-xs shadow-xs animate-in fade-in duration-200">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <div>
+              <p className="font-bold">{error}</p>
+              <p className="text-[11px] text-rose-600 mt-0.5">ارتباط با سرور مجدداً برقرار خواهد شد.</p>
+            </div>
+          </div>
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition cursor-pointer shrink-0"
+          >
+            تلاش مجدد
+          </button>
+        </div>
+      )}
+
       {/* Top Banner Alert for Pending Driver Registrations */}
       {pendingDrivers.length > 0 && (
         <div className="p-4 rounded-xl bg-orange-50 border border-orange-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">

@@ -1,0 +1,39 @@
+{
+  "name": "سامانه مدیریت آژانس تاکسی پردیس",
+  "short_name": "تاکسی پردیس",
+  "description": "سامانه جامع و پیشرفته مدیریت ناوگان، رانندگان، سفرها و پذیرش تاکسی پردیس",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0d9488",
+  "dir": "rtl",
+  "lang": "fa-IR",
+  "categories": ["transportation", "productivity", "business"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
